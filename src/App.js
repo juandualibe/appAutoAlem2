@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  // Datos simulados (esto vendría del backend)
   const [vehiculos, setVehiculos] = useState([
     { id: 1, marca: 'Ford', modelo: 'Fiesta', anio: 2019, color: 'Azul', estado: 'Usado', propietario: 'Otros', ubicacion: 'Taller', estadoProceso: 'En taller', vendido: false, precio: 12000 },
     { id: 2, marca: 'Toyota', modelo: 'Corolla', anio: 2020, color: 'Rojo', estado: 'Usado', propietario: 'Agencia', ubicacion: 'Agencia', estadoProceso: 'Listo para entrega', vendido: false, precio: 18000 },
@@ -16,14 +15,14 @@ function App() {
   ]);
 
   const [turnos, setTurnos] = useState([
-    { id_turno: 1, id_vehiculo: 4, tipo: 'Service básico', fecha: '2025-02-07T10:00:00', ubicacion: 'Taller' }, // Agrego tipo aquí
+    { id_turno: 1, id_vehiculo: 4, tipo: 'Service básico', fecha: '2025-02-07T10:00:00', ubicacion: 'Taller' },
   ]);
 
   const [seccion, setSeccion] = useState('Inicio');
   const [notificacion, setNotificacion] = useState('');
-  const [nuevoTurno, setNuevoTurno] = useState({ id_vehiculo: '', tipo: '', fecha: '', ubicacion: '' }); // Agrego tipo al estado inicial
+  const [nuevoTurno, setNuevoTurno] = useState({ id_vehiculo: '', tipo: '', fecha: '', ubicacion: '' });
+  const [menuAbierto, setMenuAbierto] = useState(false); // Nuevo estado para el menú
 
-  // Funciones para gestionar vehículos (sin cambios)
   const moverVehiculo = (id, nuevaUbicacion) => {
     setVehiculos(vehiculos.map(v => {
       if (v.id === id) {
@@ -53,13 +52,12 @@ function App() {
     setTimeout(() => setNotificacion(''), 3000);
   };
 
-  // Funciones para mantenimiento
   const programarTurno = (e) => {
     e.preventDefault();
     const nuevo = {
       id_turno: turnos.length + 1,
       id_vehiculo: parseInt(nuevoTurno.id_vehiculo),
-      tipo: nuevoTurno.tipo, // Agrego tipo aquí
+      tipo: nuevoTurno.tipo,
       fecha: nuevoTurno.fecha,
       ubicacion: nuevoTurno.ubicacion,
     };
@@ -86,7 +84,6 @@ function App() {
     setTimeout(() => setNotificacion(''), 3000);
   };
 
-  // Renderizado de secciones (solo modifico renderMantenimiento)
   const renderInicio = () => {
     const total = vehiculos.filter(v => !v.vendido).length;
     const nuevos = vehiculos.filter(v => !v.vendido && v.estado === 'Nuevo').length;
@@ -177,46 +174,50 @@ function App() {
         <input name="precio" type="number" placeholder="Precio" required />
         <button type="submit">Agregar Vehículo</button>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Color</th><th>Estado</th><th>Propietario</th><th>Ubicación</th><th>Estado Proceso</th><th>Precio</th><th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {vehiculos.filter(v => !v.vendido).map(v => (
-            <tr key={v.id}>
-              <td>{v.id}</td><td>{v.marca}</td><td>{v.modelo}</td><td>{v.anio}</td><td>{v.color}</td><td>{v.estado}</td><td>{v.propietario}</td><td>{v.ubicacion}</td><td>{v.estadoProceso}</td><td>${v.precio}</td>
-              <td>
-                <button onClick={() => moverVehiculo(v.id, 'Agencia')}>A Agencia</button>
-                <button onClick={() => moverVehiculo(v.id, 'Taller')}>A Taller</button>
-                <button onClick={() => moverVehiculo(v.id, 'Chapista')}>A Chapista</button>
-                <button onClick={() => marcarVendido(v.id)}>Vendido</button>
-              </td>
+      <div className="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Color</th><th>Estado</th><th>Propietario</th><th>Ubicación</th><th>Estado Proceso</th><th>Precio</th><th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {vehiculos.filter(v => !v.vendido).map(v => (
+              <tr key={v.id}>
+                <td>{v.id}</td><td>{v.marca}</td><td>{v.modelo}</td><td>{v.anio}</td><td>{v.color}</td><td>{v.estado}</td><td>{v.propietario}</td><td>{v.ubicacion}</td><td>{v.estadoProceso}</td><td>${v.precio}</td>
+                <td>
+                  <button onClick={() => moverVehiculo(v.id, 'Agencia')}>A Agencia</button>
+                  <button onClick={() => moverVehiculo(v.id, 'Taller')}>A Taller</button>
+                  <button onClick={() => moverVehiculo(v.id, 'Chapista')}>A Chapista</button>
+                  <button onClick={() => marcarVendido(v.id)}>Vendido</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
   const renderHistorial = () => (
     <div className="seccion">
       <h2>Historial Vendidos</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Color</th><th>Estado</th><th>Propietario</th><th>Precio</th><th>Fecha Venta</th>
-          </tr>
-        </thead>
-        <tbody>
-          {vehiculos.filter(v => v.vendido).map(v => (
-            <tr key={v.id}>
-              <td>{v.id}</td><td>{v.marca}</td><td>{v.modelo}</td><td>{v.anio}</td><td>{v.color}</td><td>{v.estado}</td><td>{v.propietario}</td><td>${v.precio}</td><td>{new Date().toLocaleString()}</td>
+      <div className="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Color</th><th>Estado</th><th>Propietario</th><th>Precio</th><th>Fecha Venta</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {vehiculos.filter(v => v.vendido).map(v => (
+              <tr key={v.id}>
+                <td>{v.id}</td><td>{v.marca}</td><td>{v.modelo}</td><td>{v.anio}</td><td>{v.color}</td><td>{v.estado}</td><td>{v.propietario}</td><td>${v.precio}</td><td>{new Date().toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -224,111 +225,91 @@ function App() {
     <div className="seccion">
       <h2>Mantenimiento</h2>
       <p>Consulta y gestiona el mantenimiento de los vehículos.</p>
-
-      {/* Formulario para programar turno con tipo */}
       <h3>Programar Nuevo Turno</h3>
       <form onSubmit={programarTurno} className="form-turno">
-        <select
-          value={nuevoTurno.id_vehiculo}
-          onChange={(e) => setNuevoTurno({ ...nuevoTurno, id_vehiculo: e.target.value })}
-          required
-        >
+        <select value={nuevoTurno.id_vehiculo} onChange={(e) => setNuevoTurno({ ...nuevoTurno, id_vehiculo: e.target.value })} required>
           <option value="">Seleccionar Vehículo</option>
           {vehiculos.filter(v => !v.vendido).map(v => (
             <option key={v.id} value={v.id}>{v.marca} {v.modelo} ({v.anio})</option>
           ))}
         </select>
-        <input
-          type="text"
-          value={nuevoTurno.tipo}
-          onChange={(e) => setNuevoTurno({ ...nuevoTurno, tipo: e.target.value })}
-          placeholder="Tipo de reparación (ej. Service, Chapa)"
-          required
-        />
-        <input
-          type="datetime-local"
-          value={nuevoTurno.fecha}
-          onChange={(e) => setNuevoTurno({ ...nuevoTurno, fecha: e.target.value })}
-          required
-        />
-        <select
-          value={nuevoTurno.ubicacion}
-          onChange={(e) => setNuevoTurno({ ...nuevoTurno, ubicacion: e.target.value })}
-          required
-        >
+        <input type="text" value={nuevoTurno.tipo} onChange={(e) => setNuevoTurno({ ...nuevoTurno, tipo: e.target.value })} placeholder="Tipo de reparación" required />
+        <input type="datetime-local" value={nuevoTurno.fecha} onChange={(e) => setNuevoTurno({ ...nuevoTurno, fecha: e.target.value })} required />
+        <select value={nuevoTurno.ubicacion} onChange={(e) => setNuevoTurno({ ...nuevoTurno, ubicacion: e.target.value })} required>
           <option value="">Seleccionar Ubicación</option>
           <option value="Taller">Taller</option>
           <option value="Chapista">Chapista</option>
         </select>
         <button type="submit">Programar</button>
       </form>
-
-      {/* Revisiones */}
       <h3>Revisiones</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Vehículo</th><th>Tipo</th><th>Fecha Ingreso</th><th>Fecha Salida</th><th>Ubicación</th><th>Costo</th><th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {revisiones.map(r => {
-            const v = vehiculos.find(v => v.id === r.id_vehiculo);
-            return (
-              <tr key={r.id_revision}>
-                <td>{r.id_revision}</td>
-                <td>{v ? `${v.marca} ${v.modelo}` : 'N/A'}</td>
-                <td>{r.tipo}</td>
-                <td>{new Date(r.fecha_ingreso).toLocaleString()}</td>
-                <td>{r.fecha_salida ? new Date(r.fecha_salida).toLocaleString() : 'Pendiente'}</td>
-                <td>{r.ubicacion}</td>
-                <td>${r.costo}</td>
-                <td>
-                  {!r.fecha_salida && <button onClick={() => finalizarRevision(r.id_revision)}>Finalizar</button>}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      {/* Turnos con tipo */}
+      <div className="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Vehículo</th><th>Tipo</th><th>Fecha Ingreso</th><th>Fecha Salida</th><th>Ubicación</th><th>Costo</th><th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {revisiones.map(r => {
+              const v = vehiculos.find(v => v.id === r.id_vehiculo);
+              return (
+                <tr key={r.id_revision}>
+                  <td>{r.id_revision}</td>
+                  <td>{v ? `${v.marca} ${v.modelo}` : 'N/A'}</td>
+                  <td>{r.tipo}</td>
+                  <td>{new Date(r.fecha_ingreso).toLocaleString()}</td>
+                  <td>{r.fecha_salida ? new Date(r.fecha_salida).toLocaleString() : 'Pendiente'}</td>
+                  <td>{r.ubicacion}</td>
+                  <td>${r.costo}</td>
+                  <td>{!r.fecha_salida && <button onClick={() => finalizarRevision(r.id_revision)}>Finalizar</button>}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <h3>Turnos</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Vehículo</th><th>Tipo</th><th>Fecha</th><th>Ubicación</th><th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {turnos.map(t => {
-            const v = vehiculos.find(v => v.id === t.id_vehiculo);
-            return (
-              <tr key={t.id_turno}>
-                <td>{t.id_turno}</td>
-                <td>{v ? `${v.marca} ${v.modelo}` : 'N/A'}</td>
-                <td>{t.tipo}</td>
-                <td>{new Date(t.fecha).toLocaleString()}</td>
-                <td>{t.ubicacion}</td>
-                <td>
-                  <button onClick={() => cancelarTurno(t.id_turno)}>Cancelar</button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Vehículo</th><th>Tipo</th><th>Fecha</th><th>Ubicación</th><th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {turnos.map(t => {
+              const v = vehiculos.find(v => v.id === t.id_vehiculo);
+              return (
+                <tr key={t.id_turno}>
+                  <td>{t.id_turno}</td>
+                  <td>{v ? `${v.marca} ${v.modelo}` : 'N/A'}</td>
+                  <td>{t.tipo}</td>
+                  <td>{new Date(t.fecha).toLocaleString()}</td>
+                  <td>{t.ubicacion}</td>
+                  <td><button onClick={() => cancelarTurno(t.id_turno)}>Cancelar</button></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
   return (
     <div className="App">
       <div className="sidebar">
-        <h1>AutoAlem</h1>
-        <button onClick={() => setSeccion('Inicio')}>Inicio</button>
-        <button onClick={() => setSeccion('Vehiculos')}>Vehículos</button>
-        <button onClick={() => setSeccion('Historial')}>Historial Vendidos</button>
-        <button onClick={() => setSeccion('Mantenimiento')}>Mantenimiento</button>
+        <div className="menu-toggle" onClick={() => setMenuAbierto(!menuAbierto)}>
+          ☰
+        </div>
+        <div className={`menu ${menuAbierto ? 'abierto' : ''}`}>
+          <h1>AutoAlem</h1>
+          <button onClick={() => { setSeccion('Inicio'); setMenuAbierto(false); }}>Inicio</button>
+          <button onClick={() => { setSeccion('Vehiculos'); setMenuAbierto(false); }}>Vehículos</button>
+          <button onClick={() => { setSeccion('Historial'); setMenuAbierto(false); }}>Historial Vendidos</button>
+          <button onClick={() => { setSeccion('Mantenimiento'); setMenuAbierto(false); }}>Mantenimiento</button>
+        </div>
       </div>
       <div className="contenido">
         {notificacion && <div className="notificacion">{notificacion}</div>}

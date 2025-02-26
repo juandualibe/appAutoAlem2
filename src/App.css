@@ -1,58 +1,93 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
+  font-family: 'Arial', sans-serif;
   display: flex;
-  font-family: Arial, sans-serif;
-  height: 100vh;
+  min-height: 100vh;
+  background-color: #f0f2f5;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 200px;
-  background-color: #2c3e50;
+  background-color: #1e2a44;
   color: white;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  width: 250px;
+  padding: 15px;
+  transition: width 0.3s ease;
 }
 
-.sidebar h1 {
+.menu-toggle {
+  display: none;
   font-size: 24px;
-  margin-bottom: 20px;
+  cursor: pointer;
+  padding: 10px;
 }
 
-.sidebar button {
+.menu h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.menu button {
+  display: block;
+  width: 100%;
   background-color: #34495e;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px;
   margin: 5px 0;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.sidebar button:hover {
+.menu button:hover {
   background-color: #3498db;
 }
 
+/* Contenido */
 .contenido {
   flex-grow: 1;
-  padding: 20px;
-  background-color: #ecf0f1;
+  padding: 15px;
   overflow-y: auto;
 }
 
 .seccion h2 {
-  color: #2c3e50;
+  color: #1e2a44;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.seccion p {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* Tablas */
+.tabla-contenedor {
+  overflow-x: auto;
+  margin: 10px 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 10px 0;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
 th, td {
   padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
+  font-size: 14px;
 }
 
 th {
@@ -61,23 +96,26 @@ th {
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f9f9f9;
 }
 
+/* Botones */
 button {
   background-color: #e74c3c;
   color: white;
   border: none;
-  padding: 5px 10px;
-  margin: 2px;
+  padding: 8px 12px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #c0392b;
 }
 
+/* Formularios */
 form {
   display: flex;
   flex-wrap: wrap;
@@ -86,28 +124,43 @@ form {
 }
 
 input, select {
-  padding: 5px;
+  padding: 8px;
   border: 1px solid #ddd;
-  border-radius: 3px;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 120px;
 }
 
+.form-turno {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Notificaciones */
 .notificacion {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   background-color: #27ae60;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
+/* Secciones específicas */
 .stats, .entregas, .alertas, .accesos {
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .stats p {
   margin: 5px 0;
+  font-size: 14px;
+  color: #333;
 }
 
 .alertas ul {
@@ -116,16 +169,91 @@ input, select {
 }
 
 .alertas li {
-  margin: 5px 0;
-}
-.form-turno {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  align-items: center;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #666;
 }
 
-.form-turno select, .form-turno input {
-  flex: 1;
-  min-width: 150px;
+/* Responsive para iPhone 8 Plus (414px) */
+@media (max-width: 414px) {
+  .App {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 0;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .menu.abierto {
+    max-height: 300px;
+  }
+
+  .menu h1 {
+    display: none;
+  }
+
+  .menu button {
+    margin: 0;
+    border-radius: 0;
+    padding: 15px;
+  }
+
+  .contenido {
+    padding: 10px;
+  }
+
+  .seccion h2 {
+    font-size: 20px;
+  }
+
+  .seccion p {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  input, select {
+    padding: 6px;
+    font-size: 12px;
+    min-width: 100px;
+  }
+
+  .form-turno {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-turno input, .form-turno select {
+    width: 100%;
+  }
+
+  .notificacion {
+    top: 5px;
+    right: 5px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .stats p, .alertas li {
+    font-size: 12px;
+  }
 }
